@@ -20,10 +20,13 @@ class pointTools:
         return False
 
     def getIntersection(self,p,a,b):
-        m = (b[1]-a[1]) / (b[0]-a[0])
-        y = p[1]
-        x = ((y-a[1])/m)+a[0]
-        return (x,y)
+        try:
+            m = (b[1]-a[1]) / (b[0]-a[0])
+            y = p[1]
+            x = ((y-a[1])/m)+a[0]
+            return (x,y)
+        except ArithmeticError:
+            return (a[0],p[1])
     
     def containedIn(self,polygon, point):
         count = 0
@@ -33,7 +36,7 @@ class pointTools:
             
             if (a[1] != b[1] and self.isInBetween(point[1],a[1], b[1])):
                 intersection = self.getIntersection(point,a,b)
-                if intersection[0] >= point[0]:
+                if intersection[0] > point[0]:
                     count += 1
 
         if count % 2 == 0:

@@ -23,41 +23,33 @@ enableSegments = True
 enableVertices = True
 enableMatrix = True
 
+polygonVertices = []
+guidePoints = []
+
 # objects
 transform = Transform()
 pointTools = pointTools()
 
 # p5 setup
-def setup():
+def setup(): # runs on startup
+    onValues_changed()
     size(550,550)
 
-def draw():
+def draw(): # runs every frame
     # variables and stuffs
-    polygonVertices = []
-    guidePoints = []
-    
     global radialSubdivision
+    global polygonVertices
+    global guidePoints
     global scaleFactor
-
+    global update
+    
     background(0)
     stroke(255)
     stroke_weight(1)
     no_fill()
     translate(width/2, height/2)
-    
+    # onValues_changed()
 
-    # Math stuffs
-    # calculate the angle between each radial subdivision
-    for i in range(radialSubdivision):
-        angle = i * TWO_PI / radialSubdivision
-        x = scaleFactor.x * cos(angle)
-        y = scaleFactor.y * sin(angle)
-        x, y = transform.rotate(x, y, rotationAngle)
-        polygonVertices.append((x, y))
-
-    # recursively generate the matrices
-    generatePoints(origin,matrixDensity,guidePoints,polygonVertices,bounds)
-    
     # actual stuffs that draws something on the screen
     if enableSegments:
         # draw lines for each subdivision from the center
@@ -158,7 +150,7 @@ def tk_ui():
     # --- UI for rotation ---
     tk.Label(root, text="Rotation (in degrees):").pack(anchor="w")
     rotationAngle_ui = tk.Spinbox(
-        root, from_=0, to=360, width=5, increment=5,
+        root, from_=0, to=360, width=5, increment=1,
         command=lambda: update_values()
     )
     rotationAngle_ui.delete(0, "end")
@@ -184,6 +176,7 @@ def tk_ui():
         global enableMatrix
         global enableVertices
         global matrixDensity
+
         try:
             scaleFactor.x = int(scale_x_ui.get())
             scaleFactor.y = int(scale_y_ui.get())
@@ -194,6 +187,7 @@ def tk_ui():
             enableSegments = enableSegments_buf.get()
             enableVertices = enableVertices_buf.get()
             enableMatrix = enableMatrix_buf.get()
+            onValues_changed()
         except ValueError:
             print("Owned by skill issue")
             pass  # ignore invalid input
@@ -228,6 +222,25 @@ def generatePoints(point,density,points,polygon,bounds,visited = None):
     generatePoints((x,y-density),density,points,polygon,bounds,visited)
     generatePoints((x+density,y),density,points,polygon,bounds,visited)
     generatePoints((x-density,y),density,points,polygon,bounds,visited)
+
+def onValues_changed():
+    # Math stuffs
+    # calculate the angle between each radial subdivision
+    global polygonVertices 
+    global guidePoints 
+
+    polygonVertices = []
+    guidePoints = []
+
+    for i in range(radialSubdivision):
+        angle = i * TWO_PI / radialSubdivision
+        x = scaleFactor.x * cos(angle)
+        y = scaleFactor.y * sin(angle)
+        x, y = transform.rotate(x, y, rotationAngle)
+        polygonVertices.append((x, y))
+
+    # recursively generate the matrices
+    generatePoints(origin,matrixDensity,guidePoints,polygonVertices,bounds)
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()
