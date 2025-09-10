@@ -5,25 +5,24 @@ from p5 import *
 from polygonUtils import *
 
 @dataclass
-class int2d:
+class vector2:
     x: int
     y: int
 
 # Shared variables (with initial values)
 matrixDensity = 100
-matrixBounds = 300
 radialSubdivision = 3
 origin = (0,0)
 bounds = (250,250)
-scaleFactor = int2d(x=200, y=200) 
+scaleFactor = vector2(x=200, y=200) 
 rotationAngle = 0
 
 # boolean vars
-enableBounds = False
-enableSegments = False
+enableBounds = True
+enableSegments = True
 enableVertices = True
 enableMatrix = True
-evenMatrix = False
+evenMatrix = True
 
 polygonVertices = []
 guidePoints = []
@@ -99,35 +98,29 @@ def tk_ui():
     # --- UI for boolean option ---
     tk.Label(root, text="Boolean Variables:").pack(anchor="w")
 
-    enableBounds_buf = tk.BooleanVar(value=enableBounds)
+    enableBounds_buf = tk.BooleanVar(value=True)
     enableBounds_ui = tk.Checkbutton(root, text='enableBounds',
                                      variable=enableBounds_buf,
                                      command=lambda: update_values())
     enableBounds_ui.pack(anchor="w", pady=1)
 
-    enableSegments_buf = tk.BooleanVar(value=enableSegments)
+    enableSegments_buf = tk.BooleanVar(value=True)
     enableSegments_ui = tk.Checkbutton(root, text='enableSegments',
                                        variable=enableSegments_buf,
                                        command=lambda: update_values())
     enableSegments_ui.pack(anchor="w", pady=1)
     
-    enableVertices_buf = tk.BooleanVar(value=enableVertices)
+    enableVertices_buf = tk.BooleanVar(value=True)
     enableVertices_ui = tk.Checkbutton(root, text='enableVertices',
                                      variable=enableVertices_buf,
                                      command=lambda: update_values())
     enableVertices_ui.pack(anchor="w", pady=1)
 
-    enableMatrix_buf = tk.BooleanVar(value=enableMatrix)
+    enableMatrix_buf = tk.BooleanVar(value=True)
     enableMatrix_ui = tk.Checkbutton(root, text='enableMatrix',
                                      variable=enableMatrix_buf,
                                      command=lambda: update_values())
     enableMatrix_ui.pack(anchor="w", pady=1)
-
-    evenMatrix_buf = tk.BooleanVar(value=evenMatrix)
-    evenMatrix_ui = tk.Checkbutton(root, text='evenMatrix',
-                                     variable=evenMatrix_buf,
-                                     command=lambda: update_values())
-    evenMatrix_ui.pack(anchor="w", pady=1)
 
     # --- UI for radial subdivision ---
     tk.Label(root, text="Radial subdivision:").pack(anchor="w")
@@ -175,27 +168,15 @@ def tk_ui():
     matrixDensity_ui.insert(0, str(matrixDensity))
     matrixDensity_ui.pack(anchor="w", pady=1)
 
-    # --- UI for matrixBounds
-    tk.Label(root, text="Matrix bounds:").pack(anchor="w")
-    matrixBounds_ui = tk.Spinbox(
-        root, from_=5, to=300, width=5, increment=1,
-        command=lambda: update_values()
-    )
-    matrixBounds_ui.delete(0, "end")
-    matrixBounds_ui.insert(0, str(matrixBounds))
-    matrixBounds_ui.pack(anchor="w", pady=1)
-
     def update_values(event=None):
         global scaleFactor
         global radialSubdivision
         global rotationAngle
-        global evenMatrix
+        global enableBounds
         global enableSegments
         global enableMatrix
         global enableVertices
-        global enableBounds
         global matrixDensity
-        global matrixBounds
 
         try:
             scaleFactor.x = int(scale_x_ui.get())
@@ -203,8 +184,6 @@ def tk_ui():
             radialSubdivision = int(radialSubdivision_ui.get())
             rotationAngle = int(rotationAngle_ui.get())
             matrixDensity = int(matrixDensity_ui.get())
-            matrixBounds = int(matrixBounds_ui.get())
-            evenMatrix = evenMatrix_buf.get()
             enableBounds = enableBounds_buf.get()
             enableSegments = enableSegments_buf.get()
             enableVertices = enableVertices_buf.get()
@@ -218,38 +197,32 @@ def tk_ui():
     root.bind("<Return>", update_values)
     root.mainloop()
 
-def generatePoints(point,density,points,polygon,bounds,evenMatrix,visited = None):
+def generatePoints(point,density,points,polygon,bounds,visited = None):
     # with point as the origin recursively generate 4 points in either direction 
     # idgaf if this is expensive i just want it to work
     # fuck the space complixity readablity is what i need right now
-   
+    x,y = point
+
+    if bounds:
+        w,h = bounds
+
     if visited is None:
         visited = set()
 
-    x, y = point
-    if evenMatrix:
-        pass
-        # do it yourself this is dogshit 
-        # for i in range(-w, w + 1, density):
-        #     for j in range(-h, h + 1, density):
-        #         nx, ny = ox + i, oy + j
-        #         if in_bounds(nx, ny) and pointTools.containedIn(polygon, (nx, ny)):
-        #             points.append((nx, ny))
-        # return
-
     if point in visited:
         return
+
     visited.add(point)
 
-    if pointTools.containedIn(polygon, point):
+    if pointTools.containedIn(polygon,point) and point not in points:
         points.append(point)
     else:
         return
 
-    generatePoints((x, y + density), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x, y - density), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x + density, y), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x - density, y), density, points, polygon, bounds, evenMatrix, visited)
+    generatePoints((x,y+density),density,points,polygon,bounds,visited)
+    generatePoints((x,y-density),density,points,polygon,bounds,visited)
+    generatePoints((x+density,y),density,points,polygon,bounds,visited)
+    generatePoints((x-density,y),density,points,polygon,bounds,visited)
 
 def onValues_changed():
     # Math stuffs
@@ -268,7 +241,7 @@ def onValues_changed():
         polygonVertices.append((x, y))
 
     # recursively generate the matrices
-    generatePoints(origin,matrixDensity,guidePoints,polygonVertices,matrixBounds,evenMatrix)
+    generatePoints(origin,matrixDensity,guidePoints,polygonVertices,bounds)
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()
