@@ -1,4 +1,5 @@
 # Ignore temporary and backup files
+./venv/*
 *.tmp
 *.bak
 *.swp

@@ -10,20 +10,19 @@ class int2d:
     y: int
 
 # Shared variables (with initial values)
-matrixDensity = 100
+matrixDensity = 60
 matrixBounds = 300
-radialSubdivision = 3
-origin = (0,0)
-bounds = (250,250)
-scaleFactor = int2d(x=200, y=200) 
-rotationAngle = 0
+radialSubdivision = 4
+bounds = (300,300)
+scaleFactor = int2d(x=150, y=150) 
+rotationAngle = 45
 
 # boolean vars
-enableBounds = False
+enableBounds = True
 enableSegments = False
 enableVertices = True
 enableMatrix = True
-evenMatrix = False
+evenMatrix = True
 
 polygonVertices = []
 guidePoints = []
@@ -35,7 +34,7 @@ pointTools = pointTools()
 # p5 setup
 def setup(): # runs on startup
     onValues_changed()
-    size(550,550)
+    size(450,450)
 
 def draw(): # runs every frame
     # variables and stuffs
@@ -79,14 +78,18 @@ def draw(): # runs every frame
             stroke_weight(5)
             point(x,y)
             stroke(255,30,30)
-            point(origin[0],origin[1])
+            point(0,0)
             stroke(255)
             stroke_weight(1)
             text(f"({int(x)}, {int(y)})", x + 5, y - 5)
 
     if enableMatrix:
         for (x,y) in guidePoints:
+            stroke(255,255,255)
+            stroke_weight(4)
             point(x,y)
+            stroke(0,255,0)
+            stroke_weight(1)
 
 
 # Tkinter UI
@@ -218,7 +221,7 @@ def tk_ui():
     root.bind("<Return>", update_values)
     root.mainloop()
 
-def generatePoints(point,density,points,polygon,bounds,evenMatrix,visited = None):
+def generatePoints(point,density,points,polygon,bounds,visited = None):
     # with point as the origin recursively generate 4 points in either direction 
     # idgaf if this is expensive i just want it to work
     # fuck the space complixity readablity is what i need right now
@@ -227,15 +230,6 @@ def generatePoints(point,density,points,polygon,bounds,evenMatrix,visited = None
         visited = set()
 
     x, y = point
-    if evenMatrix:
-        pass
-        # do it yourself this is dogshit 
-        # for i in range(-w, w + 1, density):
-        #     for j in range(-h, h + 1, density):
-        #         nx, ny = ox + i, oy + j
-        #         if in_bounds(nx, ny) and pointTools.containedIn(polygon, (nx, ny)):
-        #             points.append((nx, ny))
-        # return
 
     if point in visited:
         return
@@ -246,10 +240,10 @@ def generatePoints(point,density,points,polygon,bounds,evenMatrix,visited = None
     else:
         return
 
-    generatePoints((x, y + density), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x, y - density), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x + density, y), density, points, polygon, bounds, evenMatrix, visited)
-    generatePoints((x - density, y), density, points, polygon, bounds, evenMatrix, visited)
+    generatePoints((x, y + density), density, points, polygon, bounds, visited)
+    generatePoints((x, y - density), density, points, polygon, bounds, visited)
+    generatePoints((x + density, y), density, points, polygon, bounds, visited)
+    generatePoints((x - density, y), density, points, polygon, bounds, visited)
 
 def onValues_changed():
     # Math stuffs
@@ -268,7 +262,13 @@ def onValues_changed():
         polygonVertices.append((x, y))
 
     # recursively generate the matrices
-    generatePoints(origin,matrixDensity,guidePoints,polygonVertices,matrixBounds,evenMatrix)
+    if evenMatrix:
+        origin = (matrixDensity/2,matrixDensity/2)
+        generatePoints(origin,matrixDensity,guidePoints,polygonVertices,matrixBounds)
+    else:
+        origin = (0,0)
+        generatePoints(origin,matrixDensity,guidePoints,polygonVertices,matrixBounds)
+
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()
