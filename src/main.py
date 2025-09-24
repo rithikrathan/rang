@@ -1,8 +1,9 @@
-from dataclasses import dataclass
 import threading
 import tkinter as tk
+from dataclasses import dataclass
 from p5 import *
 from helpers.polygonUtils import *
+from helpers.kolamPattern import *
 
 
 @dataclass
