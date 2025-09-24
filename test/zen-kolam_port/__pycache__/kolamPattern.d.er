@@ -1,0 +1,23 @@
+##[pylyzer] failed /home/ravikumar/Desktop/gitclones/rang/test/zen-kolam_port/kolamPattern.py 1758603854 2623
+.json: Never
+
+.___v_desugar_1: Never
+.List: Never
+.Dict: Never
+.Set: Never
+
+.kolam_data: Never
+
+
+.KolamCurvePattern: ClassType
+.KolamCurvePattern.points: global::List!(global::List!(Int, _: Nat), _: Nat)
+.KolamCurvePattern.hasRightConnection: Bool
+.KolamCurvePattern.hasDownConnection: Bool
+.KolamCurvePattern.id: Int
+.KolamCurvePattern.__call__: (id: Int, points: global::List!(global::List!(Int, _: Nat), _: Nat), hasDownConnection: Bool, hasRightConnection: Bool) -> kolamPattern.KolamCurvePattern
+
+.KOLAM_CURVE_PATTERNS: Never
+.generate_compatibility_matrix: () -> global::Dict!({Int: global::List!(Int, _: Nat)})
+.CONNECTIVITY_RULES: Never
+.SYMMETRY_TRANSFORMS: Never
+.PATTERN_STATS: Never

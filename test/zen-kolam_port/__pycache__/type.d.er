@@ -1,0 +1,102 @@
+##[pylyzer] failed /home/ravikumar/Desktop/gitclones/rang/test/zen-kolam_port/type.py 1758603854 2224
+.___v_desugar_1: Never
+.dataclass: Never
+.___v_desugar_2: Never
+.List: Never
+.Optional: Never
+.Dict: Never
+.Set: Never
+.___v_desugar_3: Never
+.datetime: Never
+.Point: ClassType
+.Point.x: Float
+.Point.y: Float
+.Point.__call__: () -> type.Point
+
+.CurvePoint: ClassType
+.CurvePoint.x: Float
+.CurvePoint.y: Float
+.CurvePoint.__call__: () -> type.CurvePoint
+.CurvePoint.controlX: Float or NoneType
+.CurvePoint.controlY: Float or NoneType
+
+.KolamCurvePattern: ClassType
+.KolamCurvePattern.points: global::List!(type.CurvePoint, _: Nat)
+.KolamCurvePattern.hasRightConnection: Bool
+.KolamCurvePattern.hasDownConnection: Bool
+.KolamCurvePattern.id: Int
+.KolamCurvePattern.__call__: () -> type.KolamCurvePattern
+
+.GridCell: ClassType
+.GridCell.col: Int
+.GridCell.row: Int
+type = pyimport "type"
+.GridCell.dotCenter: .Point
+.GridCell.patternId: Int
+.GridCell.__call__: () -> type.GridCell
+
+.KolamGrid: ClassType
+.KolamGrid.size: Int
+.KolamGrid.cells: global::List!(global::List!(type.GridCell, _: Nat), _: Nat)
+.KolamGrid.cellSpacing: Float
+.KolamGrid.__call__: () -> type.KolamGrid
+
+.Line: ClassType
+.Line.end: .Point
+.Line.start: .Point
+.Line.id: Str
+.Line.__call__: () -> type.Line
+.Line.strokeWidth: Float or NoneType
+.Line.color: NoneType or Str
+.Line.curvePoints: NoneType or global::List!(type.CurvePoint, _: Nat)
+
+.Dot: ClassType
+.Dot.center: .Point
+.Dot.id: Str
+.Dot.__call__: () -> type.Dot
+.Dot.radius: Float or NoneType
+.Dot.color: NoneType or Str
+.Dot.filled: NoneType or Bool
+
+.KolamPattern: ClassType
+.KolamPattern.dots: global::List!(type.Dot, _: Nat)
+.KolamPattern.id: Str
+.KolamPattern.created: Never
+.KolamPattern.grid: .KolamGrid
+.KolamPattern.symmetryType: Str
+.KolamPattern.name: Str
+.KolamPattern.curves: global::List!(type.Line, _: Nat)
+.KolamPattern.modified: Never
+.KolamPattern.dimensions: Never
+.KolamPattern.__call__: () -> type.KolamPattern
+
+.AnimationStep: ClassType
+.AnimationStep.elementId: Str
+.AnimationStep.elementType: Str
+.AnimationStep.duration: Float
+.AnimationStep.drawOrder: Int
+.AnimationStep.delay: Float
+.AnimationStep.__call__: () -> type.AnimationStep
+
+.KolamAnimation: ClassType
+.KolamAnimation.id: Str
+.KolamAnimation.steps: global::List!(type.AnimationStep, _: Nat)
+.KolamAnimation.loop: Bool
+.KolamAnimation.totalDuration: Float
+.KolamAnimation.patternId: Str
+.KolamAnimation.__call__: () -> type.KolamAnimation
+
+.KolamExportFormat: {Str}
+.ExportOptions: ClassType
+.ExportOptions.format: Str
+.ExportOptions.__call__: () -> type.ExportOptions
+.ExportOptions.includeAnimation: NoneType or Bool
+.ExportOptions.backgroundColor: NoneType or Str
+.ExportOptions.scale: Float or NoneType
+
+.ConnectivityRules: ClassType
+.ConnectivityRules.rightConnectors: global::Set!(Int, _: Nat)
+.ConnectivityRules.compatiblePatterns: Never
+.ConnectivityRules.downConnectors: global::Set!(Int, _: Nat)
+.ConnectivityRules.__call__: () -> type.ConnectivityRules
+
