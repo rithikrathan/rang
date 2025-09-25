@@ -15,12 +15,12 @@ class KolamCurvePattern:
 # Convert JSON into KolamCurvePattern objects
 KOLAM_CURVE_PATTERNS: List[KolamCurvePattern] = [
     KolamCurvePattern(
-        p["id"],
-        p["points"],
-        p.get("hasDownConnection", False),
-        p.get("hasRightConnection", False)
+        patern["id"],
+        patern["points"],
+        patern.get("hasDownConnection", False),
+        patern.get("hasRightConnection", False)
     )
-    for p in kolam_data["patterns"]
+    for patern in kolam_data["patterns"]
 ]
 
 # Generate compatibility matrix

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from p5 import *
 from helpers.polygonUtils import *
 from helpers.kolamPattern import *
+from helpers.utils import *
 
 
 @dataclass
@@ -56,6 +57,7 @@ def draw():  # runs every frame
     no_fill()
     translate(width/2, height/2)
     # onValues_changed()
+    draw_pattern_at(0,0,1,size=40)
 
     # actual stuffs that draws something on the screen
     if enableSegments:
