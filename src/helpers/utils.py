@@ -1,8 +1,13 @@
 from helpers.type import CurvePoint
 from helpers.kolamPattern import KOLAM_CURVE_PATTERNS
 from p5 import *
+import math
 
-def draw_pattern_at(x: float, y: float, pattern_id: int, size: float = 100):
+def draw_pattern_at(unitCell, size: float = 100):
+    x = unitCell["x"]
+    y = unitCell["y"]
+    pattern_id = unitCell["patternId"]
+
     """Draw a kolam pattern centered at (x, y)."""
     pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id == pattern_id), None)
     if not pat:
@@ -39,3 +44,24 @@ def draw_pattern_at(x: float, y: float, pattern_id: int, size: float = 100):
     end_shape(CLOSE)
     pop_matrix()
 
+
+def filterByQuadrant(unitCells, quad):
+    if quad == 1:
+        unitCells[:] = [p for p in unitCells if p["x"] >= 0 and p["y"] >= 0]
+    elif quad == 2:
+        unitCells[:] = [p for p in unitCells if p["x"] <= 0 and p["y"] >= 0]
+    elif quad == 3:
+        unitCells[:] = [p for p in unitCells if p["x"] <= 0 and p["y"] <= 0]
+    elif quad == 4:
+        unitCells[:] = [p for p in unitCells if p["x"] >= 0 and p["y"] <= 0]
+    else:
+        raise ValueError("quad must be 1, 2, 3, or 4")
+
+    unitCells.sort(key=lambda p: math.atan2(p["y"], p["x"]))
+
+
+def mirrorVertical(cells):
+    pass
+
+def mirrorHorizontal(cells):
+    pass

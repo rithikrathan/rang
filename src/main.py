@@ -15,7 +15,7 @@ class int2d:
 
 # Shared variables (with initial values)
 matrixDensity = 60
-matrixBounds = 300
+matrixBounds = 1
 radialSubdivision = 4
 bounds = (300, 300)
 scaleFactor = int2d(x=150, y=150)
@@ -27,9 +27,12 @@ enableSegments = False
 enableVertices = True
 enableMatrix = True
 evenMatrix = True
+enablePattern = False
 
 polygonVertices = []
 guidePoints = []
+
+unitCells = []
 
 # objects
 transform = Transform()
@@ -46,10 +49,12 @@ def setup():  # runs on startup
 def draw():  # runs every frame
     # variables and stuffs
     global radialSubdivision
+    global matrixDensity
     global polygonVertices
     global guidePoints
     global scaleFactor
     global update
+    global unitCells
 
     background(0)
     stroke(255)
@@ -57,9 +62,12 @@ def draw():  # runs every frame
     no_fill()
     translate(width/2, height/2)
     # onValues_changed()
-    draw_pattern_at(0,0,1,size=40)
 
     # actual stuffs that draws something on the screen
+    if enablePattern:
+        for unitCell in unitCells:
+            draw_pattern_at(unitCell, size=matrixDensity)
+
     if enableSegments:
         # draw lines for each subdivision from the center
         stroke(0, 130, 130)
@@ -140,6 +148,12 @@ def tk_ui():
                                    command=lambda: update_values())
     evenMatrix_ui.pack(anchor="w", pady=1)
 
+    enablePattern_buf = tk.BooleanVar(value=enablePattern)
+    enablePattern_ui = tk.Checkbutton(root, text='enablePattern',
+                                   variable=enablePattern_buf,
+                                   command=lambda: update_values())
+    enablePattern_ui.pack(anchor="w", pady=1)
+
     # --- UI for radial subdivision ---
     tk.Label(root, text="Radial subdivision:").pack(anchor="w")
     radialSubdivision_ui = tk.Spinbox(
@@ -189,7 +203,7 @@ def tk_ui():
     # --- UI for matrixBounds
     tk.Label(root, text="Matrix bounds:").pack(anchor="w")
     matrixBounds_ui = tk.Spinbox(
-        root, from_=5, to=300, width=5, increment=1,
+        root, from_=1, to=4, width=5, increment=1,
         command=lambda: update_values()
     )
     matrixBounds_ui.delete(0, "end")
@@ -207,6 +221,7 @@ def tk_ui():
         global enableBounds
         global matrixDensity
         global matrixBounds
+        global enablePattern
 
         try:
             scaleFactor.x = int(scale_x_ui.get())
@@ -220,6 +235,7 @@ def tk_ui():
             enableSegments = enableSegments_buf.get()
             enableVertices = enableVertices_buf.get()
             enableMatrix = enableMatrix_buf.get()
+            enablePattern = enablePattern_buf.get()
             onValues_changed()
         except ValueError:
             print("Owned by skill issue")
@@ -230,7 +246,7 @@ def tk_ui():
     root.mainloop()
 
 
-def generatePoints(point, density, points, polygon, bounds, visited=None):
+def generatePoints(point, density, points, polygon, visited=None):
     # with point as the origin recursively generate 4 points in either direction
     # idgaf if this is expensive i just want it to work
     # fuck the space complixity readablity is what i need right now
@@ -249,10 +265,10 @@ def generatePoints(point, density, points, polygon, bounds, visited=None):
     else:
         return
 
-    generatePoints((x, y + density), density, points, polygon, bounds, visited)
-    generatePoints((x, y - density), density, points, polygon, bounds, visited)
-    generatePoints((x + density, y), density, points, polygon, bounds, visited)
-    generatePoints((x - density, y), density, points, polygon, bounds, visited)
+    generatePoints((x, y + density), density, points, polygon, visited)
+    generatePoints((x, y - density), density, points, polygon, visited)
+    generatePoints((x + density, y), density, points, polygon, visited)
+    generatePoints((x - density, y), density, points, polygon, visited)
 
 
 def onValues_changed():
@@ -260,9 +276,12 @@ def onValues_changed():
     # calculate the angle between each radial subdivision
     global polygonVertices
     global guidePoints
+    global unitCells
+    global matrixBounds
 
     polygonVertices = []
     guidePoints = []
+    unitCells = []
 
     for i in range(radialSubdivision):
         angle = i * TWO_PI / radialSubdivision
@@ -271,16 +290,22 @@ def onValues_changed():
         x, y = transform.rotate(x, y, rotationAngle)
         polygonVertices.append((x, y))
 
+
     # recursively generate the matrices
     if evenMatrix:
         origin = (matrixDensity/2, matrixDensity/2)
         generatePoints(origin, matrixDensity, guidePoints,
-                       polygonVertices, matrixBounds)
+                       polygonVertices)
     else:
         origin = (0, 0)
         generatePoints(origin, matrixDensity, guidePoints,
-                       polygonVertices, matrixBounds)
+                       polygonVertices)
 
+    for point in guidePoints:
+        unitCell = {"x":point[0],"y":point[1],"patternId":1,"connectedRight":False,"connectedLeft":False}
+        unitCells.append(unitCell)
+    
+    filterByQuadrant(unitCells,matrixBounds)
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()
