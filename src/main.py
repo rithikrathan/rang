@@ -150,8 +150,8 @@ def tk_ui():
 
     enablePattern_buf = tk.BooleanVar(value=enablePattern)
     enablePattern_ui = tk.Checkbutton(root, text='enablePattern',
-                                   variable=enablePattern_buf,
-                                   command=lambda: update_values())
+                                      variable=enablePattern_buf,
+                                      command=lambda: update_values())
     enablePattern_ui.pack(anchor="w", pady=1)
 
     # --- UI for radial subdivision ---
@@ -290,7 +290,6 @@ def onValues_changed():
         x, y = transform.rotate(x, y, rotationAngle)
         polygonVertices.append((x, y))
 
-
     # recursively generate the matrices
     if evenMatrix:
         origin = (matrixDensity/2, matrixDensity/2)
@@ -302,10 +301,17 @@ def onValues_changed():
                        polygonVertices)
 
     for point in guidePoints:
-        unitCell = {"x":point[0],"y":point[1],"patternId":1,"connectedRight":False,"connectedLeft":False}
+        unitCell = {"x": point[0], "y": point[1], "patternId": 9,
+                    "connectedRight": False, "connectedLeft": False}
         unitCells.append(unitCell)
-    
-    filterByQuadrant(unitCells,matrixBounds)
+
+    filterByQuadrant(unitCells, matrixBounds)
+
+    unitCells = generatePattern(unitCells, 48484)
+
+    unitCells = mirrorVertical(unitCells)
+    unitCells = mirrorHorizontal(unitCells)
+
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()

@@ -5,12 +5,14 @@ from typing import List, Dict, Set
 with open("kolamPatternsData.json", "r") as f:
     kolam_data = json.load(f)
 
+
 class KolamCurvePattern:
     def __init__(self, id: int, points: List[List[int]], hasDownConnection: bool, hasRightConnection: bool):
         self.id = id
         self.points = points
         self.hasDownConnection = hasDownConnection
         self.hasRightConnection = hasRightConnection
+
 
 # Convert JSON into KolamCurvePattern objects
 KOLAM_CURVE_PATTERNS: List[KolamCurvePattern] = [
@@ -24,6 +26,8 @@ KOLAM_CURVE_PATTERNS: List[KolamCurvePattern] = [
 ]
 
 # Generate compatibility matrix
+
+
 def generate_compatibility_matrix() -> Dict[int, List[int]]:
     matrix: Dict[int, List[int]] = {}
     for i in range(1, 17):
@@ -47,6 +51,7 @@ def generate_compatibility_matrix() -> Dict[int, List[int]]:
 
         matrix[i] = compatible
     return matrix
+
 
 # Connectivity rules
 CONNECTIVITY_RULES = {
@@ -74,4 +79,3 @@ PATTERN_STATS = {
         "rightConnectors": len(CONNECTIVITY_RULES["rightConnectors"]),
     }
 }
-

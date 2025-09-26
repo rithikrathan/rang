@@ -1,23 +1,24 @@
 from helpers.type import CurvePoint
-from helpers.kolamPattern import KOLAM_CURVE_PATTERNS
+from helpers.kolamPattern import KOLAM_CURVE_PATTERNS, SYMMETRY_TRANSFORMS
 from p5 import *
 import math
+import random
+
 
 def draw_pattern_at(unitCell, size: float = 100):
     x = unitCell["x"]
     y = unitCell["y"]
     pattern_id = unitCell["patternId"]
 
-    """Draw a kolam pattern centered at (x, y)."""
     pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id == pattern_id), None)
     if not pat:
         return
 
     pts = [
-            CurvePoint(pt[0], pt[1]) if isinstance(pt, list)
-            else CurvePoint(pt["x"], pt["y"])
-            for pt in pat.points
-            ]
+        CurvePoint(pt[0], pt[1]) if isinstance(pt, list)
+        else CurvePoint(pt["x"], pt["y"])
+        for pt in pat.points
+    ]
 
     if not pts:
         return
@@ -45,23 +46,75 @@ def draw_pattern_at(unitCell, size: float = 100):
     pop_matrix()
 
 
-def filterByQuadrant(unitCells, quad):
+def filterByQuadrant(cells, quad):
     if quad == 1:
-        unitCells[:] = [p for p in unitCells if p["x"] >= 0 and p["y"] >= 0]
+        cells[:] = [p for p in cells if p["x"] > 0 and p["y"] > 0]
     elif quad == 2:
-        unitCells[:] = [p for p in unitCells if p["x"] <= 0 and p["y"] >= 0]
+        cells[:] = [p for p in cells if p["x"] < 0 and p["y"] > 0]
     elif quad == 3:
-        unitCells[:] = [p for p in unitCells if p["x"] <= 0 and p["y"] <= 0]
+        cells[:] = [p for p in cells if p["x"] < 0 and p["y"] < 0]
     elif quad == 4:
-        unitCells[:] = [p for p in unitCells if p["x"] >= 0 and p["y"] <= 0]
+        cells[:] = [p for p in cells if p["x"] > 0 and p["y"] < 0]
     else:
         raise ValueError("quad must be 1, 2, 3, or 4")
 
-    unitCells.sort(key=lambda p: math.atan2(p["y"], p["x"]))
+    cells.sort(key=lambda p: math.atan2(p["y"], p["x"]))
 
 
 def mirrorVertical(cells):
-    pass
+    mirrored = []
+    for cell in cells:
+        old_id = cell["patternId"]
+        new_id = SYMMETRY_TRANSFORMS["horizontalInverse"][old_id - 1]
+
+        mirrored.append({
+            **cell,
+            "x": -cell["x"],   # flip x
+            "patternId": new_id
+        })
+
+    cells.extend(mirrored)
+    return cells
+
 
 def mirrorHorizontal(cells):
-    pass
+    mirrored = []
+    for cell in cells:
+        old_id = cell["patternId"]
+        new_id = SYMMETRY_TRANSFORMS["verticalInverse"][old_id - 1]
+
+        mirrored.append({
+            **cell,
+            "y": -cell["y"],   # flip x
+            "patternId": new_id
+        })
+
+    cells.extend(mirrored)
+    return cells
+
+
+def rotate_90(cells):
+    rotated = []
+    for cell in cells:
+        old_id = cell["patternId"]
+        new_id = SYMMETRY_TRANSFORMS["rotation90"][old_id - 1]  # map patternId
+
+        rotated.append({
+            **cell,
+            "x": -cell["y"],   # (x, y) -> (-y, x)
+            "y": cell["x"],
+            "patternId": new_id
+        })
+    return rotated
+
+
+def generatePattern(cells, seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    # Assign patternIds
+    for cell in cells:
+        # Example: pick patternId randomly from 1 to 16
+        cell["patternId"] = random.randint(1, 16)
+
+    return cells

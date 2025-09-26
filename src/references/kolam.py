@@ -178,8 +178,3 @@ class KolamGenerator:
     def generate_kolam_1d(cls, size):
         matrix = cls.propose_kolam_1d(size)
         return cls.draw_kolam(matrix)
-
-
-# Example usage:
-# pattern = KolamGenerator.generate_kolam_1d(5)
-# print(pattern.id, len(pattern.dots), len(pattern.curves))

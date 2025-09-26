@@ -9,6 +9,8 @@ selected_pattern_id = 1
 pattern_points = []
 
 # --- p5 drawing ---
+
+
 def setup():
     size(400, 400)
     no_fill()
@@ -68,19 +70,20 @@ def tk_ui():
     def update_pattern():
         global pattern_points
         selected_pattern_id = kolam_var.get()
-        pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id == selected_pattern_id), None)
+        pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id ==
+                   selected_pattern_id), None)
         if pat:
-            # mutate the existing list
             pattern_points.clear()
             pattern_points.extend([
                 CurvePoint(x=pt[0], y=pt[1]) if isinstance(pt, list)
                 else CurvePoint(x=pt["x"], y=pt["y"])
                 for pt in pat.points
-                ])
+            ])
         else:
             pattern_points.clear()
 
-    spin = tk.Spinbox(root, from_=1, to=16, width=5, textvariable=kolam_var, command=update_pattern)
+    spin = tk.Spinbox(root, from_=1, to=16, width=5,
+                      textvariable=kolam_var, command=update_pattern)
     spin.pack(anchor="w")
 
     # initial load
@@ -94,4 +97,3 @@ threading.Thread(target=tk_ui, daemon=True).start()
 
 # --- Run p5 sketch ---
 run()
-
