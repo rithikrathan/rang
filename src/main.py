@@ -3,6 +3,7 @@ import tkinter as tk
 from dataclasses import dataclass
 from p5 import *
 from helpers.polygonUtils import *
+from helpers.testUtils import *
 from helpers.kolamPattern import *
 from helpers.utils import *
 
@@ -302,12 +303,12 @@ def onValues_changed():
 
     for point in guidePoints:
         unitCell = {"x": point[0], "y": point[1], "patternId": 9,
-                    "connectedRight": False, "connectedLeft": False}
+                    "connectedRight": False, "connectedBottom": False}
         unitCells.append(unitCell)
 
     filterByQuadrant(unitCells, matrixBounds)
 
-    unitCells = generatePattern(unitCells, 48484)
+    unitCells = generate_quadrant_pattern(unitCells, 2342)
 
     unitCells = mirrorVertical(unitCells)
     unitCells = mirrorHorizontal(unitCells)

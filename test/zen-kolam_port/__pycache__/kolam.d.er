@@ -1,4 +1,4 @@
-##[pylyzer] failed /home/ravikumar/Desktop/gitclones/rang/test/zen-kolam_port/kolam.py 1758691851 6816
+##[pylyzer] failed /home/ravikumar/Desktop/gitclones/rang/test/zen-kolam_port/kolam.py 1758693723 6816
 .random: Never
 
 .___v_desugar_1: Never
@@ -18,19 +18,19 @@
 .KOLAM_CURVE_PATTERNS: Never
 .KolamGenerator: ClassType
 .KolamGenerator.__call__: () -> kolam.KolamGenerator
-.KolamGenerator.CELL_SPACING: {60}
-.KolamGenerator.pt_dn: global::List!({1, 0}, 16)
-.KolamGenerator.pt_rt: global::List!({1, 0}, 16)
-.KolamGenerator.mate_pt_dn: global::Dict!({{1}: global::List!({2, 5, 10, 3, 6, 9, 12}, 7), {2}: global::List!({7, 13, 16, 15, 8, 11, 14, 4}, 8)})
-.KolamGenerator.mate_pt_rt: global::Dict!({{1}: global::List!({4, 6, 3, 11, 13, 2, 7}, 7), {2}: global::List!({16, 10, 14, 8, 5, 15, 12, 9}, 8)})
-.KolamGenerator.h_inv: global::List!({14, 5, 6, 11, 12, 3, 4, 9, 10, 15, 16, 1, 2, 7, 8, 13}, 16)
-.KolamGenerator.v_inv: global::List!({5, 2, 15, 12, 9, 16, 7, 4, 1, 14, 11, 8, 6, 3, 13, 10}, 16)
+.KolamGenerator.CELL_SPACING: {45}
+.KolamGenerator.pt_dn: global::List!({0, 1}, 16)
+.KolamGenerator.pt_rt: global::List!({0, 1}, 16)
+.KolamGenerator.mate_pt_dn: global::Dict!({{1}: global::List!({12, 9, 6, 3, 5, 2, 10}, 7), {2}: global::List!({15, 8, 7, 16, 13, 14, 11, 4}, 8)})
+.KolamGenerator.mate_pt_rt: global::Dict!({{1}: global::List!({6, 3, 4, 11, 2, 7, 13}, 7), {2}: global::List!({15, 5, 8, 14, 10, 16, 9, 12}, 8)})
+.KolamGenerator.h_inv: global::List!({13, 16, 3, 6, 5, 8, 15, 7, 10, 9, 12, 2, 1, 4, 11, 14}, 16)
+.KolamGenerator.v_inv: global::List!({10, 13, 3, 6, 8, 11, 14, 1, 4, 7, 16, 9, 12, 15, 2, 5}, 16)
 .KolamGenerator.h_self: Never
 .KolamGenerator.v_self: Never
-.KolamGenerator.intersect: |Type_19903 <: Structural({.__contains__ = (self: Never, ?T) -> Bool}), T: Type|(a: global::Iterable(T), b: Type_19903) -> global::List!(T, _: Nat)
+.KolamGenerator.intersect: |Type_211 <: Structural({.__contains__ = (self: Never, T) -> Bool}), T: Type|(a: global::Iterable(T), b: Type_211) -> global::List!(T, _: Nat)
 .KolamGenerator.random_choice: (arr: Bool) -> {1}
-.KolamGenerator.ones: |M <: global::Mutizable|(size: {_: Int}) -> global::List!(?M.MutType!, _: Nat)
-.KolamGenerator.propose_kolam_1d: |Type_20868: Type, Type_21304: Type, Type_21051: Type, Type_20844: Type, R :> {1}, Self <: global::Indexable(?K, ?V), Type_21598: Type, Type_20867: Type, O <: Structural({.__floordiv__ = (self: Never, ?R) -> ?O}), Type_21546: Type, Self <: global::Indexable(?K, ?V), Type_21007: Type, Self <: global::Indexable(?K, ?V), Self <: global::Indexable(?K, ?V), K: Type, R :> {2}, Type_19909 <: Structural({.mate_pt_rt = ?Self; .random_choice = (self: Obj, ?20867) -> ?20868 and (self: Obj, ?21101) -> ?21102; .h_self = ?21304 and ?21546; .pt_rt = ?Self; .mate_pt_dn = ?Self; .ones = (self: Obj, ?O) -> ?20710; .h_inv = ?Self; .pt_dn = ?Self; .v_inv = ?Self; .v_self = ?21051 and ?21598; .intersect = (self: Obj, ?V, ?V) -> ?20844 and (self: Obj, ?V, ?V) -> ?21007}), Type_21102: Type, V: Type, Type_20710: Type, O: Type, Type_21101: Type, Self <: global::Indexable(?K, ?V), Self <: global::Indexable(?K, ?V), R: Type, M <: global::Mutizable|(cls: Type_19909, size_of_kolam: Structural({.__sub__ = (self: Never, R) -> O; .__mod__ = (self: Never, R) -> {0}; .__floordiv__ = (self: Never, R) -> Never})) -> global::List!(?M.MutType!, _: Nat)
-.KolamGenerator.draw_kolam: |Type_19912 <: Structural({.CELL_SPACING = ?R}), R: Type|(cls: Type_19912, M: Structural({.__len__ = (self: Never) -> Nat; .__getitem__ = (self: Obj, Obj) -> Structural({.__len__ = (self: Never) -> Nat}) and (self: Obj, Obj) -> global::Indexable(Obj, Never)})) -> Never
-.KolamGenerator.generate_kolam_1d: |Type_36187: Type, Type_19915 <: Structural({.draw_kolam = (self: Obj, ?36187) -> ?36193; .propose_kolam_1d = (self: Obj, ?19916) -> ?36187}), Type_19916: Type, Type_36193: Type|(cls: Type_19915, size: Type_19916) -> Type_36193
+.KolamGenerator.ones: |M <: global::Mutizable|(size: {_: Int}) -> global::List!(M.MutType!, _: Nat)
+.KolamGenerator.propose_kolam_1d: |Self <: global::Indexable(K, V), Type_1152 <: {<failure>}, Type_1409 :> {<failure>}, V <: Structural({.__add__ = (self: Never, R) -> K}), Type_1018 <: {<failure>}, V <: Structural({.__add__ = (self: Never, R) -> K}), O <: Structural({.__floordiv__ = (self: Never, R) -> Never}), Type_1176: Type, Self <: global::Indexable(K, V), Type_1410: Type, Type_1359: Type, Self <: global::Indexable(K, V), Type_1854: Type, Type_1612: Type, Self <: global::Indexable(K, V), Self <: global::Indexable(K, V), R :> {1}, Type_1175 :> {<failure>}, Type_1906: Type, Self <: global::Indexable(K, V), Type_1315 <: {<failure>}, K: Type, V :> {<failure>}, R :> {2}, O: Type, V <: {<failure>}, V: Type, Type_217 <: Structural({.mate_pt_rt = Self; .random_choice = (self: Obj, Type_1175) -> Type_1176 and (self: Obj, Type_1409) -> Type_1410; .h_self = Type_1612 and Type_1854; .pt_rt = Self; .mate_pt_dn = Self; .ones = (self: Obj, O) -> Type_1018; .h_inv = Self; .pt_dn = Self; .v_inv = Self; .v_self = Type_1359 and Type_1906; .intersect = (self: Obj, V, V) -> Type_1152 and (self: Obj, V, V) -> Type_1315}), M <: global::Mutizable|(cls: Type_217, size_of_kolam: Structural({.__sub__ = (self: Never, R) -> O; .__mod__ = (self: Never, R) -> {0}; .__floordiv__ = (self: Never, R) -> Never})) -> global::List!(M.MutType!, _: Nat)
+.KolamGenerator.draw_kolam: |R <: Int, Type_220 <: Structural({.CELL_SPACING = R})|(cls: Type_220, M: Structural({.__len__ = (self: Never) -> Nat; .__getitem__ = (self: Obj, Obj) -> Structural({.__len__ = (self: Never) -> Nat}) and (self: Obj, Obj) -> global::Indexable(Obj, Never)})) -> Never
+.KolamGenerator.generate_kolam_1d: |Type_224: Type, Type_9323: Type, Type_223 <: Structural({.draw_kolam = (self: Obj, Type_9318) -> Type_9323; .propose_kolam_1d = (self: Obj, Type_224) -> Type_9318}), Type_9318: Type|(cls: Type_223, size: Type_224) -> Type_9323
 
