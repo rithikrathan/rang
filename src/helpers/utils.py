@@ -9,8 +9,36 @@ def draw_pattern_at(unitCell, size: float = 100):
     x = unitCell["x"]
     y = unitCell["y"]
     pattern_id = unitCell["patternId"]
-    if pattern_id == 1:
-        size = size // 2.14
+    # to make these tile with each other
+    if pattern_id == 1: # circl
+        size = size // 1.5
+    elif pattern_id == 2: # connected up
+        y = y - size / 12
+    elif pattern_id == 13:
+        x = x + size / 7
+    elif pattern_id == 15:
+        x = x - size / 7
+    elif pattern_id == 14:
+        y = y + size / 7
+    elif pattern_id == 12:
+        y = y - size / 7
+    elif pattern_id == 6: #catEars_bl
+        x = x + size / 10
+        y = y - size / 10
+        size = size // 1.25
+    elif pattern_id == 9: #catEars_br
+        x = x - size / 10
+        y = y - size / 10
+        size = size // 1.25
+    elif pattern_id == 7: #catEars_tl
+        x = x + size / 10
+        y = y + size / 10
+        size = size // 1.25
+    elif pattern_id == 8: #catEars_tr
+        x = x - size / 10
+        y = y + size / 10
+        size = size // 1.25
+
 
     pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id == pattern_id), None)
     if not pat:

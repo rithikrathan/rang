@@ -17,11 +17,11 @@ class int2d:
 # Shared variables (with initial values)
 matrixDensity = 60
 matrixBounds = 1
-radialSubdivision = 4
+radialSubdivision = 6
 bounds = (300, 300)
-scaleFactor = int2d(x=150, y=150)
-rotationAngle = 45
-seed = 243
+scaleFactor = int2d(x=200, y=200)
+rotationAngle = 60
+seed = 245
 
 # boolean vars
 enableBounds = True
@@ -29,7 +29,7 @@ enableSegments = False
 enableVertices = True
 enableMatrix = True
 evenMatrix = True
-enablePattern = False
+enablePattern = True
 
 polygonVertices = []
 guidePoints = []
