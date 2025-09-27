@@ -11,7 +11,7 @@ def draw_pattern_at(unitCell, size: float = 100):
     pattern_id = unitCell["patternId"]
     # to make these tile with each other
     if pattern_id == 1: # circl
-        size = size // 1.5
+        size = size // 1.8
     elif pattern_id == 2: # connected up
         y = y - size / 12
     elif pattern_id == 13:

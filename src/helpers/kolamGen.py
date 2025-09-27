@@ -5,6 +5,9 @@ from helpers.kolamPattern import KOLAM_CURVE_PATTERNS
 # --- Direct connection lookups ---
 pt_dn = [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1]
 pt_rt = [0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1]
+# --- Connection lookup for odd matrix ---
+pt_up = [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1]
+pt_lt = [0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1]
 
 
 def sort_by_origin(cells):
@@ -28,6 +31,26 @@ def getValid(connB, connR):
         return [2, 11, 13, 6]
     else:  # both True
         return [16, 9, 12, 15]
+
+def getValidX(connU,connL):
+    if not connU and not connL:
+        return [1,2,3,4,6,7]
+    elif not connU and connL:
+        return [5,8,9,10,12,14]
+    elif connU and not connL:
+        return [11,13]
+    else:  # both True
+        return [16,15]
+
+def getValidY(connL,connU):
+    if not connL and not connU:
+        return [1,3,4,5,7]
+    elif not connL and connU:
+        return [10,14]
+    elif connL and not connU:
+        return [2,6,9,11,13,15]
+    else:  # both True
+        return [16,12]
 
 def generate_quadrant_pattern(unitCells, size, seed=None):
     if seed is not None:
@@ -61,30 +84,23 @@ def generate_quadrant_pattern(unitCells, size, seed=None):
         row_generated = False
         while True:
             pos = (x, y)
-            print(pos)
             if pos in generated_map:
                 x += size
                 continue
-            print(pos)
-            print(cells_set)
 
             if pos not in cells_set:
-                print("broken")
                 break  # stop this row when next point doesn’t exist
 
             # top neighbor
             top = generated_map.get((x, y - size))
             connB = top["connectedBottom"] if top else random.choice([True, False])
-            print("connb",connB)
 
             # left neighbor
             left = generated_map.get((x - size, y))
             connR = left["connectedRight"] if left else random.choice([True, False])
-            print("connrr",connR)
 
             # pick valid pattern
             valid_ids = getValid(connB, connR)
-            print(valid_ids)
             chosen_id = random.choice(valid_ids)
             idx = chosen_id - 1
 
@@ -109,3 +125,16 @@ def generate_quadrant_pattern(unitCells, size, seed=None):
 
     return generated
 
+def fillAxis(guidePoints, size, seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    # origin cell
+    pattern_id = random.choice([1, 16])
+    origin_cell = {
+        "x": 0,
+        "y": 0,
+        "patternId": pattern_id
+    }
+
+    return [origin_cell]

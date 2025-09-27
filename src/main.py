@@ -2,8 +2,9 @@ import threading
 import tkinter as tk
 from dataclasses import dataclass
 from p5 import *
+from helpers.kolamGen import fillAxis
 from helpers.polygonUtils import *
-from helpers.testUtils import *
+from helpers.kolamGen import *
 from helpers.kolamPattern import *
 from helpers.utils import *
 
@@ -15,12 +16,12 @@ class int2d:
 
 
 # Shared variables (with initial values)
-matrixDensity = 60
+matrixDensity = 27
 matrixBounds = 1
-radialSubdivision = 6
+radialSubdivision = 4
 bounds = (300, 300)
 scaleFactor = int2d(x=200, y=200)
-rotationAngle = 60
+rotationAngle = 0
 seed = 245
 
 # boolean vars
@@ -261,9 +262,13 @@ def tk_ui():
 
 
 def generatePoints(point, density, points, polygon, visited=None):
-    # with point as the origin recursively generate 4 points in either direction
+    # with point as the origin recursively generate 4 points, one in every direction
     # idgaf if this is expensive i just want it to work
     # fuck the space complixity readablity is what i need right now
+
+    # probably make this iterative so you wont have to worry about the 
+    # maximum recursion depth and stuffs, using a queue instead of the stack memory
+    # same time complexity but no maximum recursion depth error
 
     if visited is None:
         visited = set()
@@ -287,7 +292,6 @@ def generatePoints(point, density, points, polygon, visited=None):
 
 def onValues_changed():
     # Math stuffs
-    # calculate the angle between each radial subdivision
     global polygonVertices
     global guidePoints
     global unitCells
@@ -298,6 +302,7 @@ def onValues_changed():
     guidePoints = []
     unitCells = []
 
+    # calculate the angle between each radial subdivision
     for i in range(radialSubdivision):
         angle = i * TWO_PI / radialSubdivision
         x = scaleFactor.x * cos(angle)
@@ -305,7 +310,7 @@ def onValues_changed():
         x, y = transform.rotate(x, y, rotationAngle)
         polygonVertices.append((x, y))
 
-    # recursively generate the matrices
+    # recursively generate the matrices (points to place unitcells)
     if evenMatrix:
         origin = (matrixDensity/2, matrixDensity/2)
         generatePoints(origin, matrixDensity, guidePoints,
@@ -315,17 +320,25 @@ def onValues_changed():
         generatePoints(origin, matrixDensity, guidePoints,
                        polygonVertices)
 
+    # initially place a unit cell with a circle pattern in every point in the matrix
     for point in guidePoints:
         unitCell = {"x": point[0], "y": point[1], "patternId": 1,
                     "connectedRight": False, "connectedBottom": False}
         unitCells.append(unitCell)
 
+    # filter the matrix to keep only one quadrant to generate a symmetric
+    # mirror images in all other quadrants
     filterByQuadrant(unitCells, matrixBounds)
 
     unitCells = generate_quadrant_pattern(unitCells, matrixDensity, seed)
 
     unitCells = mirrorVertical(unitCells)
     unitCells = mirrorHorizontal(unitCells)
+
+    if not evenMatrix:
+        axisFills = fillAxis(guidePoints,matrixDensity,seed)
+        for i in axisFills:
+            unitCells.append(i)
 
 
 # Run Tkinter in a separate thread
