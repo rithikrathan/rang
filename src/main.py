@@ -21,6 +21,7 @@ radialSubdivision = 4
 bounds = (300, 300)
 scaleFactor = int2d(x=150, y=150)
 rotationAngle = 45
+seed = 243
 
 # boolean vars
 enableBounds = True
@@ -103,7 +104,7 @@ def draw():  # runs every frame
     if enableMatrix:
         for (x, y) in guidePoints:
             stroke(255, 255, 255)
-            stroke_weight(4)
+            stroke_weight(3)
             point(x, y)
             stroke(0, 255, 0)
             stroke_weight(1)
@@ -211,6 +212,16 @@ def tk_ui():
     matrixBounds_ui.insert(0, str(matrixBounds))
     matrixBounds_ui.pack(anchor="w", pady=1)
 
+    # --- tkui for random seed
+    tk.Label(root, text="Random seed:").pack(anchor="w")
+    seed_ui = tk.Spinbox(
+        root, from_=1, to=999999, width=5, increment=1,
+        command=lambda: update_values()
+    )
+    seed_ui.delete(0, "end")
+    seed_ui.insert(0, str(seed))
+    seed_ui.pack(anchor="w", pady=1)
+
     def update_values(event=None):
         global scaleFactor
         global radialSubdivision
@@ -223,6 +234,7 @@ def tk_ui():
         global matrixDensity
         global matrixBounds
         global enablePattern
+        global seed
 
         try:
             scaleFactor.x = int(scale_x_ui.get())
@@ -231,6 +243,7 @@ def tk_ui():
             rotationAngle = int(rotationAngle_ui.get())
             matrixDensity = int(matrixDensity_ui.get())
             matrixBounds = int(matrixBounds_ui.get())
+            seed = int(seed_ui.get())
             evenMatrix = evenMatrix_buf.get()
             enableBounds = enableBounds_buf.get()
             enableSegments = enableSegments_buf.get()
@@ -279,6 +292,7 @@ def onValues_changed():
     global guidePoints
     global unitCells
     global matrixBounds
+    global matrixDensity
 
     polygonVertices = []
     guidePoints = []
@@ -302,13 +316,13 @@ def onValues_changed():
                        polygonVertices)
 
     for point in guidePoints:
-        unitCell = {"x": point[0], "y": point[1], "patternId": 9,
+        unitCell = {"x": point[0], "y": point[1], "patternId": 1,
                     "connectedRight": False, "connectedBottom": False}
         unitCells.append(unitCell)
 
     filterByQuadrant(unitCells, matrixBounds)
 
-    unitCells = generate_quadrant_pattern(unitCells, 2342)
+    unitCells = generate_quadrant_pattern(unitCells, matrixDensity, seed)
 
     unitCells = mirrorVertical(unitCells)
     unitCells = mirrorHorizontal(unitCells)

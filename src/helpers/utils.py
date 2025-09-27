@@ -1,5 +1,5 @@
-from helpers.type import CurvePoint
 from helpers.kolamPattern import KOLAM_CURVE_PATTERNS, SYMMETRY_TRANSFORMS
+from helpers.type import *
 from p5 import *
 import math
 import random
@@ -9,6 +9,8 @@ def draw_pattern_at(unitCell, size: float = 100):
     x = unitCell["x"]
     y = unitCell["y"]
     pattern_id = unitCell["patternId"]
+    if pattern_id == 1:
+        size = size // 2.14
 
     pat = next((p for p in KOLAM_CURVE_PATTERNS if p.id == pattern_id), None)
     if not pat:

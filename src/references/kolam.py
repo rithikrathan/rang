@@ -11,14 +11,14 @@ class KolamGenerator:
     pt_rt = [0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1]
 
     mate_pt_dn = {
-        1: [2, 3, 5, 6, 9, 10, 12],
-        2: [4, 7, 8, 11, 13, 14, 15, 16]
-    }
+            1: [2, 3, 5, 6, 9, 10, 12],
+            2: [4, 7, 8, 11, 13, 14, 15, 16]
+            }
 
     mate_pt_rt = {
-        1: [2, 3, 4, 6, 7, 11, 13],
-        2: [5, 8, 9, 10, 12, 14, 15, 16]
-    }
+            1: [2, 3, 4, 6, 7, 11, 13],
+            2: [5, 8, 9, 10, 12, 14, 15, 16]
+            }
 
     h_inv = [1, 2, 5, 4, 3, 9, 8, 7, 6, 10, 11, 12, 15, 14, 13, 16]
     v_inv = [1, 4, 3, 2, 5, 7, 6, 9, 8, 10, 11, 14, 13, 12, 15, 16]
@@ -57,24 +57,24 @@ class KolamGenerator:
 
         for j in range(1, hp + 1):
             Valids = cls.intersect(
-                cls.mate_pt_dn[cls.pt_dn[Mat[hp][j] - 1] + 1],
-                cls.mate_pt_rt[cls.pt_rt[Mat[hp + 1][j - 1] - 1] + 1]
-            )
+                    cls.mate_pt_dn[cls.pt_dn[Mat[hp][j] - 1] + 1],
+                    cls.mate_pt_rt[cls.pt_rt[Mat[hp + 1][j - 1] - 1] + 1]
+                    )
             Valids = cls.intersect(Valids, cls.v_self)
             Mat[hp + 1][j] = cls.random_choice(Valids)
 
         for i in range(1, hp + 1):
             Valids = cls.intersect(
-                cls.mate_pt_dn[cls.pt_dn[Mat[i - 1][hp + 1] - 1] + 1],
-                cls.mate_pt_rt[cls.pt_rt[Mat[i][hp] - 1] + 1]
-            )
+                    cls.mate_pt_dn[cls.pt_dn[Mat[i - 1][hp + 1] - 1] + 1],
+                    cls.mate_pt_rt[cls.pt_rt[Mat[i][hp] - 1] + 1]
+                    )
             Valids = cls.intersect(Valids, cls.h_self)
             Mat[i][hp + 1] = cls.random_choice(Valids)
 
         Valids = cls.intersect(
-            cls.mate_pt_dn[cls.pt_dn[Mat[hp][hp + 1] - 1] + 1],
-            cls.mate_pt_rt[cls.pt_rt[Mat[hp + 1][hp] - 1] + 1]
-        )
+                cls.mate_pt_dn[cls.pt_dn[Mat[hp][hp + 1] - 1] + 1],
+                cls.mate_pt_rt[cls.pt_rt[Mat[hp + 1][hp] - 1] + 1]
+                )
         Valids = cls.intersect(Valids, cls.h_self)
         Valids = cls.intersect(Valids, cls.v_self)
         Mat[hp + 1][hp + 1] = cls.random_choice(Valids)
@@ -130,7 +130,7 @@ class KolamGenerator:
                         center=Point(x=(j + 1) * cls.CELL_SPACING,
                                      y=(i + 1) * cls.CELL_SPACING),
                         radius=3, color="#ffffff", filled=True
-                    ))
+                        ))
                     idx = flippedM[i][j] - 1
                     if 0 <= idx < len(KOLAM_CURVE_PATTERNS):
                         pattern = KOLAM_CURVE_PATTERNS[idx]
@@ -141,7 +141,7 @@ class KolamGenerator:
                             cls.CELL_SPACING if p.controlX else None,
                             controlY=(i + 1 + p.controlY) *
                             cls.CELL_SPACING if p.controlY else None
-                        ) for p in pattern.points]
+                            ) for p in pattern.points]
                         curves.append(Line(
                             id=f"curve-{i}-{j}",
                             start=curvePoints[0],
@@ -149,30 +149,30 @@ class KolamGenerator:
                             curvePoints=curvePoints,
                             strokeWidth=1.5,
                             color="#ffffff"
-                        ))
+                            ))
 
         grid = KolamGrid(
-            size=max(m, n),
-            cells=[[GridCell(
+                size=max(m, n),
+                cells=[[GridCell(
                     row=i, col=j, patternId=flippedM[i][j],
                     dotCenter=Point(x=(j + 1) * cls.CELL_SPACING,
                                     y=(i + 1) * cls.CELL_SPACING)
                     ) for j in range(n)] for i in range(m)],
-            cellSpacing=cls.CELL_SPACING
-        )
+                cellSpacing=cls.CELL_SPACING
+                )
 
         return KolamPattern(
-            id=f"kolam-{m}x{n}",
-            name=f"Kolam {m}×{n}",
-            grid=grid,
-            curves=curves,
-            dots=dots,
-            symmetryType="1D",
-            dimensions={"width": (n + 1) * cls.CELL_SPACING,
-                        "height": (m + 1) * cls.CELL_SPACING},
-            created=datetime.now(),
-            modified=datetime.now()
-        )
+                id=f"kolam-{m}x{n}",
+                name=f"Kolam {m}×{n}",
+                grid=grid,
+                curves=curves,
+                dots=dots,
+                symmetryType="1D",
+                dimensions={"width": (n + 1) * cls.CELL_SPACING,
+                            "height": (m + 1) * cls.CELL_SPACING},
+                created=datetime.now(),
+                modified=datetime.now()
+                )
 
     @classmethod
     def generate_kolam_1d(cls, size):
