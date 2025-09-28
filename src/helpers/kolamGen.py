@@ -34,9 +34,9 @@ def getValid(connB, connR):
 
 def getValidX(connU,connL):
     if not connU and not connL:
-        return [1,2,3,4,6,7]
+        return [1,3]
     elif not connU and connL:
-        return [5,8,9,10,12,14]
+        return [5,10]
     elif connU and not connL:
         return [11,13]
     else:  # both True
@@ -44,11 +44,11 @@ def getValidX(connU,connL):
 
 def getValidY(connL,connU):
     if not connL and not connU:
-        return [1,3,4,5,7]
+        return [1,4]
     elif not connL and connU:
         return [10,14]
     elif connL and not connU:
-        return [2,6,9,11,13,15]
+        return [2,11]
     else:  # both True
         return [16,12]
 
@@ -125,16 +125,95 @@ def generate_quadrant_pattern(unitCells, size, seed=None):
 
     return generated
 
-def fillAxis(guidePoints, size, seed=None):
+def fillAxis(unitCells, guidePoints, size, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    # origin cell
+    generated = []
+
+    # --- origin cell ---
     pattern_id = random.choice([1, 16])
+    idx = pattern_id - 1
     origin_cell = {
         "x": 0,
         "y": 0,
-        "patternId": pattern_id
+        "patternId": pattern_id,
+        "connectedRight": bool(pt_rt[idx]),
+        "connectedBottom": bool(pt_dn[idx])
     }
+    generated.append(origin_cell)
 
-    return [origin_cell]
+    # quick lookup from unitCells coords → patternId
+    cell_map = {(c["x"], c["y"]): c for c in unitCells}
+
+    # --- move along +X axis ---
+    x, y = 0, 0
+    while True:
+        x += size
+        current = (x, y)
+
+        if current not in guidePoints:
+            break
+
+        # below neighbor
+        below = (x, y + size)
+        connU = False
+        if below in cell_map:
+            below_id = cell_map[below]["patternId"]
+            connU = bool(pt_up[below_id - 1])
+
+        # left neighbor
+        left = (x - size, y)
+        left_cell = next((c for c in generated if c["x"] == left[0] and c["y"] == left[1]), None)
+        connL = left_cell["connectedRight"] if left_cell else False
+
+        # pick valid pattern
+        valid_ids = getValidX(connU, connL)
+        chosen_id = random.choice(valid_ids)
+        idx = chosen_id - 1
+
+        cell = {
+            "x": x,
+            "y": y,
+            "patternId": chosen_id,
+            "connectedRight": bool(pt_rt[idx]),
+            "connectedBottom": bool(pt_dn[idx])
+        }
+
+        generated.append(cell)
+
+    # --- Y-axis fill (downwards) ---
+    x, y = 0, 0  # start at origin
+    while True:
+        y += size
+        current = (x, y)
+
+        # stop if current point not in guidePoints
+        if current not in guidePoints:
+            break
+
+        # --- neighbors ---
+        # top neighbor
+        top_cell = next((c for c in generated if c["x"] == x and c["y"] == y - size), None)
+        connU = bool(pt_dn[top_cell["patternId"] - 1]) if top_cell else False
+
+        # right neighbor
+        right_cell = next((c for c in unitCells if c["x"] == x + size and c["y"] == y), None)
+        connL = bool(pt_lt[right_cell["patternId"] - 1]) if right_cell else False
+
+        # --- pick valid pattern ---
+        valid_ids = getValidY(connU, connL)
+        chosen_id = random.choice(valid_ids)
+        idx = chosen_id - 1
+
+        # --- create cell ---
+        cell = {
+            "x": x,
+            "y": y,
+            "patternId": chosen_id,
+            "connectedRight": bool(pt_rt[idx]),
+            "connectedBottom": bool(pt_dn[idx])
+        }
+        generated.append(cell)    
+
+    return generated

@@ -25,11 +25,11 @@ rotationAngle = 0
 seed = 245
 
 # boolean vars
-enableBounds = True
+enableBounds = False
 enableSegments = False
-enableVertices = True
+enableVertices = False
 enableMatrix = True
-evenMatrix = True
+evenMatrix = False
 enablePattern = True
 
 polygonVertices = []
@@ -332,14 +332,14 @@ def onValues_changed():
 
     unitCells = generate_quadrant_pattern(unitCells, matrixDensity, seed)
 
-    unitCells = mirrorVertical(unitCells)
-    unitCells = mirrorHorizontal(unitCells)
 
     if not evenMatrix:
-        axisFills = fillAxis(guidePoints,matrixDensity,seed)
+        axisFills = fillAxis(unitCells,guidePoints,matrixDensity,seed)
         for i in axisFills:
             unitCells.append(i)
 
+    unitCells = mirrorVertical(unitCells)
+    unitCells = mirrorHorizontal(unitCells)
 
 # Run Tkinter in a separate thread
 threading.Thread(target=tk_ui, daemon=True).start()
